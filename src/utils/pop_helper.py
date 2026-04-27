@@ -37,7 +37,10 @@ def clip_pixel_admin_units_levels(data_var, shapefile_boundaries, var_abb):
 
 
 def _clip_pop_to_country(da, shapefile_ad0):
-    ds = da.to_dataset()
+    if not isinstance(da, xr.Dataset):
+        ds = da.to_dataset()
+    else:
+        ds = da
     clipped, _ = clip_shape_files(ds, shapefile_ad0, "population")
     return clipped["population"]
 
