@@ -19,13 +19,15 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 import rioxarray
+import hdf5plugin
+import xarray as xr
 
 from src.config.data_catalog import (get_country_gadm, get_dbcca, get_countries_base, get_countries_projections,
                                      domains_file_subset, get_countries_observation)
 from src.config.data_sets import SEDAC_CONFIG, MODEL_CONFIGS, get_abbreviation
 from src.config.param import crs_reference_global, admin_unit_levels, missing_value
 from src.utils.path_helper import create_folder,  file_storage
-from src.utils.data_helper import replace_f_number, read_in_xarray_var_crs
+from src.utils.data_helper import replace_f_number
 from src.utils.avg_helper import (admin_name_func, define_names,  clip_pixel_admin_units_levels,
                                   weights_cos_lat, weighted_mean, get_domain_from_country)
 from src.utils.pop_helper import (prepare_pop, get_pop_for_year, weights_pop, _clip_pop_to_country,
@@ -176,12 +178,13 @@ def load_files(reg_sel, model_name, model_config, shapefile_boundaries, scenario
 
 
 def prepare_continent_file_model(shapefile_boundaries, scenario, start, end, realization, path_source, continent,
-        var_abb, model):
+        var_abb, model, crs_reference=crs_reference_global):
     pattern = "{}_{}_DBCCA_{}_{}_{}_{}_{}_compressed.nc".format(
         continent, var_abb, model, start, end, realization, scenario
     )
     path_file = os.path.join(path_source, pattern)
-    ds = read_in_xarray_var_crs(path_file)
+    ds = xr.open_dataset(path_file, engine="h5netcdf")
+    ds.rio.write_crs(crs_reference, inplace=True)
     if "time_bnds" in ds.data_vars:
         ds = ds.drop_vars("time_bnds")
     ds_clip_ad0, num_pix_ad0 = clip_pixel_admin_units_levels(ds, shapefile_boundaries, var_abb)
