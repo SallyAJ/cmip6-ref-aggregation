@@ -37,7 +37,7 @@ def load_years_pop(sedac_path_processed, year_sedac, ssp, cdo_domain_0_1_deg):
     file_pop_path = os.path.join(sedac_raw_ssp, file_pop[0])
     file_pop_year = os.path.join(sedac_path_processed, f"pop_{ssp}_{year_sedac}_ya.nc")
     if not os.path.exists(file_pop_year):
-        get_cdo().remapcon(
+        get_cdo().remapsum(
             cdo_domain_0_1_deg,
             input=file_pop_path,
             output=file_pop_year
