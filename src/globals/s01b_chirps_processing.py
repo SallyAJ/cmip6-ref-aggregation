@@ -11,7 +11,7 @@ from src.utils.cdo_helper import main_grid_lon_lat, set_miss, get_cdo
 from src.utils.date_helper import reformat_chirps_date
 from osgeo import gdal
 
-config = DateUpdateArgs(year_start=1981, year_end=2024, month_start=1, month_end=12)
+config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 
 
 def main(update_config: DateUpdateArgs):
@@ -21,40 +21,22 @@ def main(update_config: DateUpdateArgs):
     chirps_processed = get_processed_folder(CHIRPS_CONFIG, "total_precipitation")
     for year in list(range(update_config.year_start, update_config.year_end + 1)):
         for month in list(range(update_config.month_start, update_config.month_end + 1)):
-            for days in list(range(update_config.day_start, update_config.day_end + 1)):
-                try:
-                    day_selected, month_selected, year_selected = reformat_chirps_date(days, month, year)
-                    chirps_path_storage = define_chirps_filepath_name_nc(year_selected, month_selected, day_selected,
-                                                                         chirps_processed)
-                    if not os.path.exists(chirps_path_storage):
-                        chirps_path_raw = define_chirps_filepath_name(year_selected, month_selected, day_selected,
-                                                                      chirps_raw)
-                        chirps_path_raw_nc = define_chirps_filepath_name_nc(year_selected, month_selected, day_selected,
-                                                                            chirps_raw)
-                        from_tiff_to_nc(chirps_path_raw, chirps_path_raw_nc)
-                        date_str = f"{year}-{month:02d}-{days:02d}"
-                        chirps_nc = get_cdo().setdate(date_str, input=chirps_path_raw_nc)
-                        chirps_invert_miss = set_miss(chirps_nc)
-                        main_grid_lon_lat(chirps_invert_miss, chirps_path_storage)
-                except:
-                    continue
+            try:
+                month_selected, year_selected = reformat_chirps_date(month, year)
+                chirps_path_storage = define_chirps_filepath_name_nc(year_selected, month_selected,
+                                                                     chirps_processed)
+                if not os.path.exists(chirps_path_storage):
+                    file_format = "chirps-v3.0.{}.{}.days_p05.nc".format(year_selected, month_selected)
+                    chirps_path_raw_nc = chirps_raw + "/{}".format(file_format)
+                    chirps_invert_miss = set_miss(chirps_path_raw_nc)
+                    main_grid_lon_lat(chirps_invert_miss, chirps_path_storage)
+            except:
+                continue
 
 
-def from_tiff_to_nc(tiffile, ncfile, missing_val=missing_value):
-    gdal.Translate(ncfile,
-                   tiffile,
-                   format='NETCDF', noData=missing_val)
-
-
-def define_chirps_filepath_name(year_sel, month_sel, day_sel, path):
+def define_chirps_filepath_name_nc(year_sel, month_sel, path):
     chirps_daily_path = os.path.join(path,
-                                     "chirps-v3.0.{}.{}.{}.tif".format(year_sel, month_sel, day_sel))
-    return chirps_daily_path
-
-
-def define_chirps_filepath_name_nc(year_sel, month_sel, day_sel, path):
-    chirps_daily_path = os.path.join(path,
-                                     "chirps-v3.0.{}.{}.{}.nc".format(year_sel, month_sel, day_sel))
+                                     "chirps-v3.0.{}.{}.nc".format(year_sel, month_sel))
     return chirps_daily_path
 
 

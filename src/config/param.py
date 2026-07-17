@@ -11,7 +11,7 @@ missing_value = -9999.0
 gadm_version = "v410"
 
 # global parameters
-url_chirps = os.getenv("CHIRPS_URL", "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/daily/final/ERA5/")
+url_chirps = os.getenv("CHIRPS_URL", "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/daily/final/rnl/netcdf/byMonth/")
 
 
 # cds download

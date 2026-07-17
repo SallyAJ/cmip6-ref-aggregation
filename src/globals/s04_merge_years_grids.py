@@ -32,7 +32,7 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
             path_chirps_ref_year_01deg = get_ref_paths(CHIRPS_CONFIG, year_sel, variable="total_precipitation",
                                                        resolution="0_1_deg")
             path_var_store_chirps = get_processed_folder(CHIRPS_CONFIG, "total_precipitation")
-            merge_files_year(path_var_store_chirps, "Band1", "pr", year_sel, path_chirps_merged_year,
+            merge_files_year(path_var_store_chirps, "precip", "pr", year_sel, path_chirps_merged_year,
                              path_chirps_merged_year_box, path_chirps_merged_year_time, lon_min=-180, lon_max=180,
                              lat_min=-60,
                              lat_max=60)
