@@ -68,12 +68,13 @@ domains = list(cpd_region_list.keys())
 
 countries_codes = [
     "AFG", "AGO", "ALB", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BIH", "BLR", "BLZ", "BOL", "BRA", "BTN", "CAF",
-    "CIV", "CMR", "COD", "COG", "COL", "COM", "CPV", "CUB", "DJI", "DZA", "ECU", "EGY", "ERI", "ETH", "GEO", "GHA",
-    "GIN", "GMB", "GNB", "GTM", "GUY", "HND", "HTI", "IDN", "IND", "IRN", "IRQ", "JAM", "JOR", "KEN", "KGZ", "KHM",
-    "LAO", "LBR", "LKA", "LSO", "MAR", "MDA", "MDG", "MKD", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NAM", "NER",
-    "NGA", "NIC", "NPL", "PAK", "PER", "PHL", "PNG", "PRK", "PRY", "PSE", "RWA", "SDN", "SEN", "SLB", "SLE", "SLV",
-    "SOM", "SRB", "SSD", "STP", "SWZ", "SYR", "TCD", "TGO", "THA", "TJK", "TKM", "TLS", "TUN", "TZA", "UGA", "UKR",
-    "UZB", "VEN", "VNM", "VUT", "YEM", "ZAF", "ZMB", "ZWE"]
+    "CIV", "CMR", "COD", "COG", "COL", "COM", "CPV", "CUB", "DJI", "DZA", "ECU", "EGY", "ERI", "ETH", "GAB", "GEO", "GHA",
+    "GIN", "GMB", "GNB", "GTM", "GUF", "GUY", "HND", "HRV", "HTI", "IDN", "IND", "IRN", "IRQ", "JAM", "JOR", "KEN", "KGZ",
+    "KHM", "KOR", "LAO", "LBR", "LKA", "LSO", "MAR", "MDA", "MDG", "MKD", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NAM",
+    "NER", "NGA", "NIC", "NPL", "PAK", "PAN", "PER", "PHL", "PNG", "PRK", "PRY", "PSE", "RWA", "SDN", "SEN", "SLB", "SLE",
+    "SLV", "SOM", "SRB", "SSD", "STP", "SUP", "SWZ", "SYR", "TCD", "TGO", "THA", "TJK", "TKM", "TLS", "TUN", "TZA", "UGA",
+    "UKR", "UZB", "VEN", "VNM", "VUT", "YEM", "ZAF", "ZMB", "ZWE"]
+
 
 admin_unit_levels = ["ADM_0", "ADM_1", "ADM_2"]
 
