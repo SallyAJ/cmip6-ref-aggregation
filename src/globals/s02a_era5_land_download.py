@@ -13,7 +13,7 @@ from src.config.param import url_era5land, key_era5land
 from src.config.args import DateUpdateArgs
 
 variables_main = ['surface_pressure', '2m_dewpoint_temperature', '2m_temperature']
-config = DateUpdateArgs(year_start=1981, year_end=2024, month_start=1, month_end=12)
+config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 
 
 def main(update_config: DateUpdateArgs, variables):

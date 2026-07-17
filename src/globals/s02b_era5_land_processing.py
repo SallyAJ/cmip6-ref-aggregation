@@ -11,7 +11,7 @@ from src.utils.date_helper import reformat_era5_date
 from src.utils.path_helper import create_folder
 
 # global parameters
-config = DateUpdateArgs(year_start=1981, year_end=2024, month_start=1, month_end=12)
+config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 
 
 def main(update_config: DateUpdateArgs):

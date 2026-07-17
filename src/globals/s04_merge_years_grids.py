@@ -6,7 +6,7 @@
 import os
 import xarray as xr
 from src.config.args import DateUpdateArgs
-from src.config.data_sets import CHIRPS_CONFIG, ERA5_LAND_CONFIG, get_abbreviation_era5, harmonize_abbrevation, \
+from src.config.data_sets import CHIRPS_CONFIG, ERA5_LAND_CONFIG, get_abbreviation_era5, harmonize_abbrevation_rev, \
     get_merged_path_filename
 from src.config.data_catalog import get_grid_raw, get_merged_folder, \
     get_processed_folder, get_ref_folder
@@ -15,7 +15,7 @@ from src.utils.cdo_helper import get_cdo, main_grid_lon_lat
 from src.utils.grid_helper import regrid_domain_conservative, regrid_domain_bilinear
 
 
-config = DateUpdateArgs(year_start=1981, year_end=2024, month_start=1, month_end=12)
+config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 cdo_domain_1deg_txt = os.path.join(get_grid_raw(), 'grid_1deg_quasiglobal.txt')
 cdo_domain_01deg_txt = os.path.join(get_grid_raw(), 'grid_0_1deg_quasiglobal.txt')
 
@@ -48,11 +48,9 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
         ]
         for variable_sel in variables_era5land:
             var_abb = get_abbreviation_era5(variable_sel)
-            var_abb_harm = harmonize_abbrevation(var_abb)
-            if variable_sel == "2m_temperature_daymax":
-                var_abb_harm = "tasmax"
-            if variable_sel == "2m_temperature_daymin":
-                var_abb_harm = "tasmin"
+            var_abb_harm = harmonize_abbrevation_rev(var_abb)
+            if variable_sel in ["2m_temperature_daymax", "2m_temperature_daymin"]:
+                var_abb_harm = "2t"
             path_era5land_merged_year, path_era5land_merged_year_box, path_era5land_merged_year_time = get_merged_paths(
                 ERA5_LAND_CONFIG, year_sel,
                 variable_sel)
@@ -61,7 +59,7 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
             path_era5land_ref_year_01deg = get_ref_paths(ERA5_LAND_CONFIG, year_sel, variable=variable_sel,
                                                          resolution="0_1_deg")
             path_var_store_era5land = get_processed_folder(ERA5_LAND_CONFIG, variable_sel)
-            merge_files_year(path_var_store_era5land, var_abb, var_abb_harm, year_sel, path_era5land_merged_year,
+            merge_files_year(path_var_store_era5land, var_abb_harm, var_abb, year_sel, path_era5land_merged_year,
                              path_era5land_merged_year_box, path_era5land_merged_year_time,
                              lon_min=-180, lon_max=180, lat_min=-60,
                              lat_max=60)

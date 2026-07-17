@@ -56,7 +56,6 @@ CHIRPS_CONFIG = {
 SEDAC_CONFIG = {"id": "SEDAC", "years": ["2000", "2010", "2020", "2030", "2040", "2050",
                                          "2060", "2070", "2080", "2090", "2100"]}
 
-
 MODEL_CONFIGS = {
     "CanESM5": {
         "id": "CanESM5",
@@ -81,7 +80,7 @@ MODEL_CONFIGS = {
         "scenarios": ["historical", "ssp245", "ssp585"],
         "variables": list(RANGES_ESM.keys()),
         "value_ranges": RANGES_ESM
-    } ,
+    },
     "TaiESM1": {
         "id": "TaiESM1",
         "scenarios": ["historical", "ssp245", "ssp585"],
@@ -94,7 +93,7 @@ MODEL_CONFIGS = {
         "variables": list(RANGES_ESM.keys()),
         "value_ranges": RANGES_ESM
     }
- }
+}
 
 
 def get_abbreviation_era5(variable):
@@ -145,16 +144,19 @@ def get_long_variable(variable):
     return abbreviation_dict.get(variable, None)
 
 
-def harmonize_abbrevation(var_abb):
-    abbreviation_dict = {
-        "rh": "hurs",
-        "sh": "huss",
-        "2t": "tas",
-        "precip": "pr",
-        "strd": "rlds",
-        "ssrd": "rsds",
-    }
-    return abbreviation_dict.get(var_abb, None)
+abbreviation_dict = {
+    "rh": "hurs",
+    "sh": "huss",
+    "2t": "tas",
+    "precip": "pr",
+    "strd": "rlds",
+    "ssrd": "rsds",
+}
+
+
+def harmonize_abbrevation_rev(var_abb):
+    reverse_abbreviation_dict = {v: k for k, v in abbreviation_dict.items()}
+    return reverse_abbreviation_dict.get(var_abb, None)
 
 
 def get_merged_path_filename(merged_path, variable, year):
@@ -162,4 +164,3 @@ def get_merged_path_filename(merged_path, variable, year):
     output_file_box = os.path.join(merged_path, "{}_years_{}_box.nc".format(variable, year))
     output_file_time = os.path.join(merged_path, "{}_years_{}.nc".format(variable, year))
     return output_file, output_file_box, output_file_time
-
