@@ -21,7 +21,7 @@ from src.config.param import crs_reference_global, cpd_region_list
 from src.utils.data_helper import conventions_obs, conventions_esm, replace_f_number, load_model_data
 
 
-config = DateUpdateArgs(year_start=1981, year_end=2024, month_start=1, month_end=12)
+config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 realization_sel = "r1i1p1f1"
 scenarios = ["ssp245", "ssp585"]  # in addition to historical
 

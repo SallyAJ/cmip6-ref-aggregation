@@ -14,10 +14,10 @@ from src.utils.path_helper import get_files_by_pattern, write_nc_file
 from src.utils.cdo_helper import get_cdo, main_grid_lon_lat
 from src.utils.grid_helper import regrid_domain_conservative, regrid_domain_bilinear
 
-
 config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 cdo_domain_1deg_txt = os.path.join(get_grid_raw(), 'grid_1deg_quasiglobal.txt')
 cdo_domain_01deg_txt = os.path.join(get_grid_raw(), 'grid_0_1deg_quasiglobal.txt')
+
 
 def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
     if update_config.year_start < 1950:  # ERA5-Land is available from 1950.
