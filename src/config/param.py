@@ -72,7 +72,7 @@ countries_codes = [
     "GIN", "GMB", "GNB", "GTM", "GUF", "GUY", "HND", "HRV", "HTI", "IDN", "IND", "IRN", "IRQ", "JAM", "JOR", "KEN", "KGZ",
     "KHM", "KOR", "LAO", "LBR", "LKA", "LSO", "MAR", "MDA", "MDG", "MKD", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NAM",
     "NER", "NGA", "NIC", "NPL", "PAK", "PAN", "PER", "PHL", "PNG", "PRK", "PRY", "PSE", "RWA", "SDN", "SEN", "SLB", "SLE",
-    "SLV", "SOM", "SRB", "SSD", "STP", "SUP", "SWZ", "SYR", "TCD", "TGO", "THA", "TJK", "TKM", "TLS", "TUN", "TZA", "UGA",
+    "SLV", "SOM", "SRB", "SSD", "STP", "SUR", "SWZ", "SYR", "TCD", "TGO", "THA", "TJK", "TKM", "TLS", "TUN", "TZA", "UGA",
     "UKR", "UZB", "VEN", "VNM", "VUT", "YEM", "ZAF", "ZMB", "ZWE"]
 
 
