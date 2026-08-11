@@ -13,7 +13,7 @@ dependencies:
   - netcdf4=1.7.4
   - h5netcdf=1.8.1
 
-  - cdo=1.6.1
+  - cdo=2.6.1
   - eccodes=2.46.0
   - cdsapi=0.7.7
 

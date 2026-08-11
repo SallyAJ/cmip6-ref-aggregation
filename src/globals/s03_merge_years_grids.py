@@ -2,11 +2,14 @@
 # Preparation of data (based on the processed outputs of all "_processing.py" scripts) to generate yearly NetCDF files
 # on various grids (0.1° for downscaling; 1° for comparisons with global climate model outputs). Based on the spatial
 # extent of the data, the final outputs are sliced from 60°S to 60°N (180°W - 180°E).
+# Data stored in the reference folder represent the reference climatology of the bias-corrected and downscaled climate
+# model outputs. Data stored in the merged folder are used as final output to be compressed and also used for
+# spatial aggregation (in R).
 
 import os
 import xarray as xr
 from src.config.args import DateUpdateArgs
-from src.config.data_sets import CHIRPS_CONFIG, ERA5_LAND_CONFIG, get_abbreviation_era5, harmonize_abbrevation_rev, \
+from src.config.data_sets import CHIRPS_CONFIG, ERA5_LAND_CONFIG, get_abbreviation, harmonize_abbrevation_rev, \
     get_merged_path_filename
 from src.config.data_catalog import get_grid_raw, get_merged_folder, \
     get_processed_folder, get_ref_folder
@@ -24,21 +27,23 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
         raise AttributeError("Minimum year is 1950.")
     for year_sel in list(range(update_config.year_start, update_config.year_end + 1)):
         if year_sel > 1980:
-            path_chirps_merged_year, path_chirps_merged_year_box, path_chirps_merged_year_time = get_merged_paths(
-                CHIRPS_CONFIG, year_sel,
-                variable="total_precipitation")
+            (path_chirps_merged_year, path_chirps_merged_year_box, path_chirps_merged_year_time,
+             path_chirps_merged_year_inter, path_chirps_merged_year_global,
+             path_chrips_merged_year_final) = get_merged_paths(CHIRPS_CONFIG, year_sel, variable="total_precipitation")
             path_chirps_ref_year_1deg = get_ref_paths(CHIRPS_CONFIG, year_sel, variable="total_precipitation",
                                                       resolution="1_deg")
             path_chirps_ref_year_01deg = get_ref_paths(CHIRPS_CONFIG, year_sel, variable="total_precipitation",
                                                        resolution="0_1_deg")
             path_var_store_chirps = get_processed_folder(CHIRPS_CONFIG, "total_precipitation")
             merge_files_year(path_var_store_chirps, "precip", "pr", year_sel, path_chirps_merged_year,
-                             path_chirps_merged_year_box, path_chirps_merged_year_time, lon_min=-180, lon_max=180,
-                             lat_min=-60,
-                             lat_max=60)
+                             path_chirps_merged_year_box, path_chirps_merged_year_time, path_chirps_merged_year_inter,
+                             path_chrips_merged_year_final, lon_min=-180, lon_max=180, lat_min=-60, lat_max=60)
+            get_cdo().copy(input=path_chrips_merged_year_final, output=path_chirps_merged_year_global)
             regrid_domain_conservative(cdo_domain_01deg, path_chirps_merged_year, path_chirps_ref_year_01deg)
             regrid_domain_conservative(cdo_domain_1deg, path_chirps_merged_year, path_chirps_ref_year_1deg)
+            os.remove(path_chrips_merged_year_final)
             os.remove(path_chirps_merged_year)
+            os.remove(path_chirps_merged_year_inter)
         excluded_variables = ["surface_pressure", "2m_dewpoint_temperature", "2m_dewpoint_temperature_daymin",
                               "2m_dewpoint_temperature_daymax", "population_era5land",
                               "surface_solar_radiation_downwards", "surface_thermal_radiation_downwards",
@@ -47,13 +52,15 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
             var for var in ERA5_LAND_CONFIG["variables"] if var not in excluded_variables
         ]
         for variable_sel in variables_era5land:
-            var_abb = get_abbreviation_era5(variable_sel)
+            var_abb = get_abbreviation(variable_sel)
             var_abb_harm = harmonize_abbrevation_rev(var_abb)
-            if variable_sel in ["2m_temperature_daymax", "2m_temperature_daymin"]:
+            if variable_sel == "2m_temperature_daymax":
                 var_abb_harm = "2t"
-            path_era5land_merged_year, path_era5land_merged_year_box, path_era5land_merged_year_time = get_merged_paths(
-                ERA5_LAND_CONFIG, year_sel,
-                variable_sel)
+            if variable_sel == "2m_temperature_daymin":
+                var_abb_harm = "2t"
+            (path_era5land_merged_year, path_era5land_merged_year_box, path_era5land_merged_year_time,
+             path_era5land_merged_year_inter, path_era5land_merged_year_global,
+             path_era5land_merged_year_final) = get_merged_paths(ERA5_LAND_CONFIG, year_sel, variable_sel)
             path_era5land_ref_year_1deg = get_ref_paths(ERA5_LAND_CONFIG, year_sel, variable=variable_sel,
                                                         resolution="1_deg")
             path_era5land_ref_year_01deg = get_ref_paths(ERA5_LAND_CONFIG, year_sel, variable=variable_sel,
@@ -61,15 +68,18 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
             path_var_store_era5land = get_processed_folder(ERA5_LAND_CONFIG, variable_sel)
             merge_files_year(path_var_store_era5land, var_abb_harm, var_abb, year_sel, path_era5land_merged_year,
                              path_era5land_merged_year_box, path_era5land_merged_year_time,
-                             lon_min=-180, lon_max=180, lat_min=-60,
-                             lat_max=60)
+                             path_era5land_merged_year_inter, path_era5land_merged_year_final, lon_min=-180,
+                             lon_max=180,
+                             lat_min=-60, lat_max=60)
+            get_cdo().copy(input=path_era5land_merged_year_final, output=path_era5land_merged_year_global)
             regrid_domain_bilinear(cdo_domain_01deg, path_era5land_merged_year, path_era5land_ref_year_01deg)
             regrid_domain_bilinear(cdo_domain_1deg, path_era5land_merged_year, path_era5land_ref_year_1deg)
+            os.remove(path_era5land_merged_year_final)
             os.remove(path_era5land_merged_year)
 
 
 def merge_files_year(input_path, org_name, new_name, year, path_merged_year, path_merged_year_box, output_file_time,
-                     lon_min,
+                     output_file_inter, path_merged_year_final, lon_min,
                      lon_max, lat_min,
                      lat_max):
     files_year = get_files_by_pattern(input_path, str(year))
@@ -78,9 +88,14 @@ def merge_files_year(input_path, org_name, new_name, year, path_merged_year, pat
         get_cdo().mergetime(input=" ".join(input_files_with_path), output=output_file_time)
         main_grid_lon_lat(output_file_time, path_merged_year_box, minlat=lat_min, maxlat=lat_max, minlon=lon_min,
                           maxlon=lon_max)
-        ds = change_time_name(path_merged_year_box, org_name, new_name)
-        write_nc_file(ds, new_name, path_merged_year)
+        main_grid_lon_lat(output_file_time, output_file_inter, minlat=-90, maxlat=90, minlon=-180, maxlon=180)
+        ds_box = change_time_name(path_merged_year_box, org_name, new_name)
+        ds_all = change_time_name(output_file_inter, org_name, new_name)
+        write_nc_file(ds_box, new_name, path_merged_year)
+        write_nc_file(ds_all, new_name, path_merged_year_final)
         os.remove(path_merged_year_box)
+        os.remove(output_file_time)
+        os.remove(output_file_inter)
 
 
 def change_time_name(path_merged_year_box, org_name, new_name):
@@ -102,8 +117,9 @@ def get_ref_path_filename(ref_path, variable, year, resolution):
 
 def get_merged_paths(data_config, year, variable):
     merged_path = get_merged_folder(data_config, variable)
-    path_merged_year, path_merged_year_box, output_file_time = get_merged_path_filename(merged_path, variable, year)
-    return path_merged_year, path_merged_year_box, output_file_time
+    (path_merged_year, path_merged_year_box, output_file_time, output_file_inter,
+     output_file_global, output_file_final) = get_merged_path_filename(merged_path, variable, year)
+    return path_merged_year, path_merged_year_box, output_file_time, output_file_inter, output_file_global, output_file_final
 
 
 def get_ref_paths(data_config, year, variable, resolution):

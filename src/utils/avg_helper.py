@@ -5,10 +5,12 @@ from shapely.geometry import mapping
 import numpy as np
 from src.config.param import gadm_version
 
+
 # check crs
 def check_crs_reference(data_var, shapefile):
     if data_var.rio.crs != shapefile.crs:
         sys.exit()
+
 
 # weighting schemes
 def weights_cos_lat(nc_data):

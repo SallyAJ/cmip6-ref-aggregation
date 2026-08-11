@@ -21,10 +21,9 @@ def main(update_config: DateUpdateArgs):
         for month in list(range(update_config.month_start, update_config.month_end + 1)):
             month_selected, year_selected = reformat_chirps_date(month, year)
             file_format = "chirps-v3.0.{}.{}.days_p05.nc".format(year_selected, month_selected)
-            file_path = CHIRPS_URL + "{}".format(file_format)
+            file_path = url_chirps + "{}".format(file_format)
             storage_file_path = os.path.join(target_path, file_format)
             download_data(file_path, storage_file_path)
-
 
 
 def download_data(url, save_path):

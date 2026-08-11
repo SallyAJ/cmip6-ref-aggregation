@@ -53,8 +53,6 @@ CHIRPS_CONFIG = {
     "value_ranges": CHIRPS_RANGES,
 }
 
-SEDAC_CONFIG = {"id": "SEDAC", "years": ["2000", "2010", "2020", "2030", "2040", "2050",
-                                         "2060", "2070", "2080", "2090", "2100"]}
 
 MODEL_CONFIGS = {
     "CanESM5": {
@@ -94,18 +92,6 @@ MODEL_CONFIGS = {
         "value_ranges": RANGES_ESM
     }
 }
-
-
-def get_abbreviation_era5(variable):
-    abbreviation_dict = {
-        "relative_humidity": "rh",
-        "specific_humidity": "sh",
-        "2m_temperature": "2t",
-        "2m_temperature_daymin": "2t",
-        "2m_temperature_daymax": "2t",
-        "total_precipitation": "tp"
-    }
-    return abbreviation_dict.get(variable, None)
 
 
 def get_abbreviation(variable):

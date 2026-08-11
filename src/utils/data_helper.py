@@ -27,8 +27,9 @@ def read_in_xarray_var_crs(nc_path, crs_reference=crs_reference_global):
 
 def read_in_time(path_file, year):
     ds = xr.open_dataset(path_file, engine="h5netcdf")
-    if "time_bnds" in ds.data_vars:
-        ds = ds.drop_vars("time_bnds")
+    drop_vars = [v for v in ["time_bnds", "spatial_ref"] if v in ds.variables]
+    if drop_vars:
+        ds = ds.drop_vars(drop_vars)
     time_len = ds.dims["time"]
     new_time = pd.date_range(
         start=f"{year}-01-01",

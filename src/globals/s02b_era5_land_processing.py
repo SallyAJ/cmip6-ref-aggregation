@@ -13,11 +13,12 @@ from src.utils.path_helper import create_folder
 # global parameters
 config = DateUpdateArgs(year_start=1981, year_end=2025, month_start=1, month_end=12)
 
+dew_var = "2m_dewpoint_temperature"
+air_var = "2m_temperature"
+surface_pressure_var = "surface_pressure"
+
 
 def main(update_config: DateUpdateArgs):
-    dew_var = "2m_dewpoint_temperature"
-    air_var = "2m_temperature"
-    surface_pressure_var = "surface_pressure"
     if update_config.year_start < 1950:
         raise AttributeError("Minimum year for ERA5-LAND is 1950.")
     for year in list(range(update_config.year_start, update_config.year_end + 1)):

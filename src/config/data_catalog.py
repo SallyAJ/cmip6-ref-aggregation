@@ -56,11 +56,6 @@ def get_country_gadm(country_sel, admin_level, crs_reference=crs_reference_numbe
     return df_gadm_crs_country
 
 
-# SEDAC
-def get_sedac_raw():
-    return os.path.join(os.path.join(get_global_observation(), "external", "SEDAC"))
-
-
 # Projections
 def get_dbcca():
     return os.path.join(os.path.join(get_global_projections(), "external"))
