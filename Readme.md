@@ -134,7 +134,7 @@ BiocManager::install(c("rhdf5", "rhdf5filters"))
 
 ---
 ## Citations and Acknowledgments
-We acknowledge the providers of the original datasets and thank them for producing and making these data publicly 
+We acknowledge the providers of the original datasets, and thank them for producing and making these data publicly 
 available. The providers are not responsible for any use of the extracted or processed data. Projects using this 
 repository, the derived data, or information from the publication are kindly requested to cite both
 this project and the original source datasets from which the area-level estimates are derived, 

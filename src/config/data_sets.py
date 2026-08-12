@@ -148,5 +148,8 @@ def harmonize_abbrevation_rev(var_abb):
 def get_merged_path_filename(merged_path, variable, year):
     output_file = os.path.join(merged_path, "{}_years_{}_base.nc".format(variable, year))
     output_file_box = os.path.join(merged_path, "{}_years_{}_box.nc".format(variable, year))
-    output_file_time = os.path.join(merged_path, "{}_years_{}.nc".format(variable, year))
-    return output_file, output_file_box, output_file_time
+    output_file_time = os.path.join(merged_path, "{}_years_{}_time.nc".format(variable, year))
+    output_file_inter = os.path.join(merged_path, "{}_years_{}_inter.nc".format(variable, year))
+    output_file_global = os.path.join(merged_path, "{}_years_{}_global.nc".format(variable, year))
+    output_file_final = os.path.join(merged_path, "{}_years_{}.nc".format(variable, year))
+    return output_file, output_file_box, output_file_time, output_file_inter, output_file_global, output_file_final
