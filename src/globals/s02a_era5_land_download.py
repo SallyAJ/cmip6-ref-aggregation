@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Download file to download hourly ERA5-Land data provided by  European Centre for Medium-Range Weather Forecasts
 # (ECMWF) via the Copernicus Climate Data Store (CDS). For further instructions on retrieval please refer to

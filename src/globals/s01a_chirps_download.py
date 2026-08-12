@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Download file to download CHIRPS-3.0 data (CHIRPS: Rainfall Estimates from Rain Gauge and Satellite Observations)
 # provided by the Climate Hazard Centre.

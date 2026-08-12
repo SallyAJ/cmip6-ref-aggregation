@@ -1,4 +1,5 @@
-########################################################################
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Example script demonstrating how to create daily estimates of climate variables,
 # aggregated across different administrative levels for a specific country.

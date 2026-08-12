@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Preparation of data (based on the processed outputs of all "_processing.py" scripts) to generate yearly NetCDF files
 # on various grids (0.1° for downscaling; 1° for comparisons with global climate model outputs). Based on the spatial

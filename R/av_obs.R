@@ -1,3 +1,5 @@
+# Copyright © 2026 Wes Hinsley and Neil Ferguson (GitHubIDs: weshinsley and NeilFerguson)
+
 ## Packages needed
 
 # install.packages(c("terra", "sf", "exactextractr", "data.table", "ggplot2",

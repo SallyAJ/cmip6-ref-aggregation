@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Final check of observational data and bias-corrected, downscaled climate projections before further processing.
 # A quality control check ensures that all values fall within realistic ranges (as described in the corresponding

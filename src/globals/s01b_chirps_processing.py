@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Processing CHIRPS-3.0 data (based on raw files downloaded via s01a_chirps_download.py) to e.g., standardize date and
 # file formats, align model grids, and ensure consistent directional orientation (e.g., North-South).

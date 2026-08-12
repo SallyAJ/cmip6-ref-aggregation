@@ -1,3 +1,5 @@
+# Copyright © 2026 Wes Hinsley and Neil Ferguson (GitHubIDs: weshinsley and NeilFerguson)
+
 ## region to run
 
 source("av_proj.R")

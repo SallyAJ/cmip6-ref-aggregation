@@ -1,3 +1,5 @@
+# Copyright © 2026 Wes Hinsley and Neil Ferguson (GitHubIDs: weshinsley and NeilFerguson)
+
 run_proj <- function(region_selected,
                      all_scenarios = list("HISTORICAL","SSP245", "SSP585")) {
 

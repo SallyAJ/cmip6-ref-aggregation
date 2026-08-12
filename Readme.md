@@ -30,7 +30,12 @@ For further details, users are referred to the publication.
 ## Dependencies and Setup
 
 ### General Setup
-#### Python
+#### Python 
+
+##### Copyright and Corresponding Author
+Copyright © 2026 Sally Jahn (GitHubID: SallyAJ).
+
+##### General
 The main code was developed using Python 3.11 in a Linux (Ubuntu) environment.
 
 To run this repo, create the environment with ``conda env create -f environment.yml``. Make sure to update the placeholder
@@ -83,6 +88,11 @@ cp .env.template .env
 
 
 #### R
+
+##### Copyright and Corresponding Authors
+Copyright © 2026 Wes Hinsley and Neil Ferguson (GitHubIDs: weshinsley and NeilFerguson).
+
+##### General
 Part of the code was developed using the statistical programming language R, within the RStudio integrated development 
 environment (IDE) on a Windows operating system. Running the R code provides spatially aggregated area-weighted and 
 population-weighted area-level estimates, in addition to those generated based on the simple cosine-of-latitude weighting 

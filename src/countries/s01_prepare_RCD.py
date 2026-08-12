@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Countries were assigned to domains based on the overlap with, and the distance between, each country's geographic
 # center and predefined reference of the domain.

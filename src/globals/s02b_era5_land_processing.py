@@ -1,3 +1,5 @@
+# Copyright © 2026 Sally Jahn (GitHubID: SallyAJ)
+
 # ScriptOverview
 # Processing of ERA5_Land (based on raw files downloaded via s02a_era5_land_download.py) to e.g., calculate further
 # variables, generate daily information, standardize model grids and directional orientation (e.g., North-South).
