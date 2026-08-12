@@ -78,11 +78,11 @@ def avg_admin(country_code, ds_variables, variables_era5land, domain, period_con
                 run_country_obs(country_code, index, shape_country, admin_names, ds_variables,
                                 variables_era5land,
                                 domain,
-                                period_config)
+                                period_config, admin_unit)
 
 
 def run_country_obs(country_code, index, shape_country, admin_names, ds_variables, variables_era5land_list, domain,
-                    period_config):
+                    period_config, admin_unit_level):
     polygon = shape_country.geometry.iloc[index]
     polygon_gdf = gpd.GeoDataFrame(geometry=[polygon], crs=crs_reference_global)
     cleaned_admin_unit_name = define_names(admin_names[index])
@@ -91,14 +91,15 @@ def run_country_obs(country_code, index, shape_country, admin_names, ds_variable
             period=period_config,
             ds_variables=ds_variables,
             variables_era5land=variables_era5land_list,
-            reg_sel=domain
+            reg_sel=domain, admin_unit_level=admin_unit_level
             )
 
 
-def pq_file(polygon_gdf, cleaned_admin_unit_name, country, period, ds_variables, variables_era5land, reg_sel):
+def pq_file(polygon_gdf, cleaned_admin_unit_name, country, period, ds_variables, variables_era5land, reg_sel,
+            admin_unit_level):
     path_country = os.path.join(get_countries_observation(), country)
     storage_path_pq_admin = create_storage_path(
-        path_country, reg_sel, cleaned_admin_unit_name,
+        path_country, reg_sel, cleaned_admin_unit_name, admin_unit_level,
         "CHIRPSv3_ERA5Land", period[0], period[-1],
         "observation", "pq"
     )
@@ -160,23 +161,28 @@ def combine_years_obs(variable, ds_variables, polygon_gdf, crs_reference=crs_ref
     return mean_values_area, num_pixels_nc
 
 
-def get_level_gadm(gadm_code):
-    if re.search(r"_\d+_\d+_\d+$", gadm_code):
-        return "_adm2"
-    elif re.search(r"_\d+_\d+$", gadm_code):
-        return "_adm1"
-    else:
-        return ""
+def get_level_gadm(admin_level):
+    level = admin_level.lower().replace("_", "")
+    return level
 
 
 # storage
-def create_storage_path(storage_path, continent, gadm_code, data_source, start, end, information, end_format):
+def create_storage_path(storage_path, continent, gadm_code, admin_unit_level, data_source, start, end, information, end_format):
     create_folder(storage_path)
-    admin_level = get_level_gadm(gadm_code)
+    admin_level = get_level_gadm(admin_unit_level)
     storage_path_format = os.path.join(storage_path, "{}_{}_{}_reference_{}_{}_{}{}.{}".format(continent, gadm_code,
                                                                                                data_source, str(start),
                                                                                                str(end), information,
                                                                                                admin_level, end_format))
+    if "?" in storage_path_format:
+        storage_path_format = storage_path_format.replace("Europe_?_v410_", "Europe_UKR_v410_unknown_")
+
+    if "_GHA" in storage_path_format:
+        storage_path_format = re.sub(
+            r"(Africa_GHA)([^_]+(?:_[^_]+)*)_v410",
+            lambda m: f"{m.group(1)}_v410_{m.group(2)}",
+            storage_path_format
+        )
     return storage_path_format
 
 

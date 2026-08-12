@@ -67,11 +67,11 @@ def get_countries_base():
 
 
 def get_countries_observation():
-    return os.path.join(get_countries_base(), "observation")
+    return os.path.join(get_countries_base(), "observations_coslat")
 
 
 def get_countries_projections():
-    return os.path.join(get_countries_base(), "projections")
+    return os.path.join(get_countries_base(), "projections_coslat")
 
 
 # get download and processing folders

@@ -24,17 +24,16 @@ from src.config.data_catalog import (get_country_gadm, get_dbcca, get_countries_
                                      domains_file_subset, get_countries_observation)
 from src.config.data_sets import MODEL_CONFIGS, get_abbreviation
 from src.config.param import crs_reference_global, admin_unit_levels, missing_value
-from src.utils.path_helper import create_folder,  file_storage
+from src.utils.path_helper import create_folder, file_storage
 from src.utils.data_helper import replace_f_number
-from src.utils.avg_helper import (admin_name_func, define_names,  clip_pixel_admin_units_levels,
+from src.utils.avg_helper import (admin_name_func, define_names, clip_pixel_admin_units_levels,
                                   weights_cos_lat, weighted_mean, get_domain_from_country)
 from src.utils.grid_helper import get_area
-
 
 # global parameters
 realization = "r1i1p1f1"  # "r2i1p1f1", "r3i1p1f1", etc.
 scenarios = ["historical", "ssp245", "ssp585"]
-country_code_sel = "VEN" # select country
+country_code_sel = "VEN"  # select country
 
 
 def main(domain, country_code, scenarios_list):
@@ -55,15 +54,16 @@ def main(domain, country_code, scenarios_list):
                     # Sequential execution for clarity (replacing the original multiprocessing block)
                     for index in indices_list:
                         run_country_sequential(domain=domain,
-                            index=index,
-                            shape_admin=shape_admin,
-                            country_code=country_code,
-                            datasets=datasets_local,
-                            model_name=model_name,
-                            model_config=model_config,
-                            scenario=scenario,
-                            admin_names=admin_names_list
-                        )
+                                               index=index,
+                                               shape_admin=shape_admin,
+                                               country_code=country_code,
+                                               admin_unit_level=admin_unit,
+                                               datasets=datasets_local,
+                                               model_name=model_name,
+                                               model_config=model_config,
+                                               scenario=scenario,
+                                               admin_names=admin_names_list
+                                               )
 
 
 # ============================================================
@@ -72,19 +72,22 @@ def main(domain, country_code, scenarios_list):
 # ============================================================
 
 
-def run_country_sequential(domain,  index, country_code, shape_admin, datasets, model_name, model_config,
-        scenario, admin_names):
+def run_country_sequential(domain, index, country_code, admin_unit_level, shape_admin, datasets, model_name, model_config,
+                           scenario, admin_names):
     polygon = shape_admin.geometry.iloc[index]
     polygon_gdf = gpd.GeoDataFrame(geometry=[polygon], crs=crs_reference_global)
     cleaned_admin_unit_name = define_names(admin_names[index])
     variables = model_config["variables"]
-    esm_country_avg(domain=domain,  polygon_gdf=polygon_gdf,
-        cleaned_admin_unit_name=cleaned_admin_unit_name, country=country_code, scenario=scenario,
-        model_name=model_name, variables=variables, variable_to_country_paths=datasets)
+    esm_country_avg(domain=domain, polygon_gdf=polygon_gdf,
+                    cleaned_admin_unit_name=cleaned_admin_unit_name, admin_unit_level=admin_unit_level,
+                    country=country_code, scenario=scenario,
+                    model_name=model_name, variables=variables, variable_to_country_paths=datasets)
 
 
 # area-level estimates per country
-def esm_country_avg(domain, polygon_gdf, cleaned_admin_unit_name, country, scenario, model_name, variables, variable_to_country_paths):
+def esm_country_avg(domain, polygon_gdf, cleaned_admin_unit_name, admin_unit_level, country, scenario, model_name,
+                    variables,
+                    variable_to_country_paths):
     path_country = os.path.join(get_countries_projections(), country)
     start, end = get_scenario_settings(scenario)
     if model_name == "UKESM1.0-LL":
@@ -92,8 +95,8 @@ def esm_country_avg(domain, polygon_gdf, cleaned_admin_unit_name, country, scena
     else:
         realization_sel = realization
     information_model = "{}_{}".format(realization_sel, scenario)
-    storage_path_pq_admin_model = create_storage_path(path_country, domain, cleaned_admin_unit_name, model_name,
-        start, end, information_model,"pq")
+    storage_path_pq_admin_model = create_storage_path(path_country, domain, cleaned_admin_unit_name, admin_unit_level, model_name,
+                                                      start, end, information_model, "pq")
     if not os.path.exists(storage_path_pq_admin_model):
         result_esm = pq_file_esm(
             polygon_gdf=polygon_gdf,
@@ -144,13 +147,13 @@ def load_files(reg_sel, model_name, model_config, shapefile_boundaries, scenario
         else:
             realization_chosen = realization_sel
         ds_file = prepare_continent_file_model(shapefile_boundaries, scenario, start, end, realization_chosen,
-            path_source, reg_sel, var_abb, model_name)
+                                               path_source, reg_sel, var_abb, model_name)
         datasets[variable] = ds_file
     return datasets
 
 
 def prepare_continent_file_model(shapefile_boundaries, scenario, start, end, realization, path_source, continent,
-        var_abb, model, crs_reference=crs_reference_global):
+                                 var_abb, model, crs_reference=crs_reference_global):
     pattern = "{}_{}_DBCCA_{}_{}_{}_{}_{}_compressed.nc".format(
         continent, var_abb, model, start, end, realization, scenario
     )
@@ -177,22 +180,28 @@ def get_scenario_settings(scenario):
     return start, end
 
 
-def get_level_gadm(gadm_code):
-    if re.search(r"_\d+_\d+_\d+$", gadm_code):
-        return "_adm2"
-    elif re.search(r"_\d+_\d+$", gadm_code):
-        return "_adm1"
-    else:
-        return ""
+def get_level_gadm(admin_level):
+    level = admin_level.lower().replace("_", "")
+    return level
 
 
 # storage
-def create_storage_path(storage_path,continent, gadm_code, data_source, start, end, information, end_format):
+def create_storage_path(storage_path, continent, gadm_code, admin_unit_level, data_source, start, end, information, end_format):
     create_folder(storage_path)
-    admin_level = get_level_gadm(gadm_code)
+    admin_level = get_level_gadm(admin_unit_level)
     storage_path_format = os.path.join(storage_path, "{}_{}_{}_reference_{}_{}_{}{}.{}".format(continent, gadm_code,
-                                                                             data_source, str(start), str(end), information,
-                                                                             admin_level, end_format))
+                                                                                               data_source, str(start),
+                                                                                               str(end), information,
+                                                                                               admin_level, end_format))
+    if "?" in storage_path_format:
+        storage_path_format = storage_path_format.replace("Europe_?_v410_", "Europe_UKR_v410_unknown_")
+
+    if "_GHA" in storage_path_format:
+        storage_path_format = re.sub(
+            r"(Africa_GHA)([^_]+(?:_[^_]+)*)_v410",
+            lambda m: f"{m.group(1)}_v410_{m.group(2)}",
+            storage_path_format
+        )
     return storage_path_format
 
 
