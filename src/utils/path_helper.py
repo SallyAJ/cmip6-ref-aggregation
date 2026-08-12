@@ -64,7 +64,7 @@ def file_storage(start, end, entry, storage_path_pq):
     value_columns = {}
     daily_dates = pd.date_range(start=f"{start}-01-01", end=f"{end}-12-31", freq="D")
     for key, value_raw in entry.items():
-        if key == "pixels" or key == "admin_name":
+        if key in ("pixels", "admin_name", "admin_area_km2"):
             continue
         if isinstance(value_raw, list) and value_raw and isinstance(value_raw[0], list):
             value = flatten_list_of_lists(value_raw)

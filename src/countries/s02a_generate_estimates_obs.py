@@ -56,7 +56,7 @@ def prepare_continent_file(path_source, continent, variable, period, shape_ad0, 
                            crs_reference=crs_reference_global):
     datasets = []
     for year in period:
-        pattern = "{}_{}_{}_compressed.nc".format(continent, variable, year)
+        pattern = "{}_{}_{}_compressed_reference.nc".format(continent, variable, year)
         path_file = os.path.join(path_source, pattern)
         ds = read_in_time(path_file, year)
         datasets.append(ds)
@@ -171,7 +171,7 @@ def get_level_gadm(admin_level):
 def create_storage_path(storage_path, continent, gadm_code, admin_unit_level, data_source, start, end, information, end_format):
     create_folder(storage_path)
     admin_level = get_level_gadm(admin_unit_level)
-    storage_path_format = os.path.join(storage_path, "{}_{}_{}_reference_{}_{}_{}{}.{}".format(continent, gadm_code,
+    storage_path_format = os.path.join(storage_path, "{}_{}_{}_reference_{}_{}_{}_{}.{}".format(continent, gadm_code,
                                                                                                data_source, str(start),
                                                                                                str(end), information,
                                                                                                admin_level, end_format))
