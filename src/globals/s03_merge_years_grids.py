@@ -45,7 +45,6 @@ def main(update_config: DateUpdateArgs, cdo_domain_01deg, cdo_domain_1deg):
             regrid_domain_conservative(cdo_domain_1deg, path_chirps_merged_year, path_chirps_ref_year_1deg)
             os.remove(path_chrips_merged_year_final)
             os.remove(path_chirps_merged_year)
-            os.remove(path_chirps_merged_year_inter)
         excluded_variables = ["surface_pressure", "2m_dewpoint_temperature", "2m_dewpoint_temperature_daymin",
                               "2m_dewpoint_temperature_daymax", "population_era5land",
                               "surface_solar_radiation_downwards", "surface_thermal_radiation_downwards",

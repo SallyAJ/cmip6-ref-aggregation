@@ -18,3 +18,8 @@ def regrid_domain_bilinear(cdo_domain, path_merged_year, file_path_regrid):
         output=file_path_regrid
     )
 
+
+def get_area(polygon_gdf):
+    polygon_gdf_equal = polygon_gdf.to_crs("ESRI:54009")
+    area_km2 = polygon_gdf_equal.geometry.area.iloc[0] / 1_000_000
+    return area_km2
